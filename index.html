@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Royal Union | Private Guest Portal</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@200;300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pearl': '#FDFBF7',
+            'ivory': '#F4F1EA',
+            'gold-light': '#FBEA9E',
+            'gold-mid': '#C5A059',
+            'gold-dark': '#997A15',
+            'maroon': '#4A0E17',
+            'emerald': '#0A3B2C',
+            'matte-black': '#111111',
+          },
+          backgroundImage: {
+            'marble': "url('https://www.transparenttextures.com/patterns/white-marble.png')",
+            'silk': "url('https://www.transparenttextures.com/patterns/subtle-silk.png')",
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FDFBF7;
+      color: #111111;
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Typography */
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .font-engraved { font-family: 'Cinzel', serif; }
+    .font-script { font-family: 'Great Vibes', cursive; }
+
+    .gold-gradient-text {
+      background: linear-gradient(to right, #997A15, #D4AF37, #997A15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Custom Luxurious Cursor (Hidden on touch devices) */
+    @media (pointer: fine) {
+      #cursor-dot, #cursor-ring {
+        position: fixed;
+        top: 0; left: 0;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 999999;
+      }
+      #cursor-dot {
+        width: 6px; height: 6px;
+        background-color: #C5A059;
+        transition: width 0.2s, height 0.2s, background-color 0.2s;
+      }
+      #cursor-ring {
+        width: 36px; height: 36px;
+        border: 1px solid rgba(197, 160, 89, 0.6);
+        transition: transform 0.1s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+      }
+      body.hovering #cursor-dot { width: 0; height: 0; }
+      body.hovering #cursor-ring {
+        width: 50px; height: 50px;
+        background-color: rgba(197, 160, 89, 0.1);
+        border-color: #C5A059;
+        backdrop-filter: blur(2px);
+      }
+    }
+    @media (pointer: coarse) {
+      /* Disable custom cursor on mobile */
+      #cursor-dot, #cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+
+    /* Floating Particles */
+    #particle-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0.5;
+    }
+
+    /* Animations */
+    @keyframes kenBurns {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+    .animate-ken-burns { animation: kenBurns 25s ease-out infinite alternate; }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    /* Scroll Reveals */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.2s; }
+    .reveal-delay-2 { transition-delay: 0.4s; }
+
+    /* Light Frosted Glass (Ivory Theme) */
+    .glass-card-light {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+      transition: transform 0.3s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+    .glass-card-light:hover {
+      border-color: rgba(197, 160, 89, 0.8);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
+      transform: translateY(-5px);
+    }
+
+    /* Cinematic Door Animation */
+    .door-wrapper { perspective: 1500px; }
+    .door-left, .door-right {
+      transition: transform 2s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transform-style: preserve-3d;
+      transform-origin: left center;
+    }
+    .door-right { transform-origin: right center; }
+    .doors-open .door-left { transform: rotateY(-105deg); }
+    .doors-open .door-right { transform: rotateY(105deg); }
+
+    /* Advanced AI Photo Scrolling */
+    @keyframes scrollVerticalUp {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+    @keyframes scrollVerticalDown {
+      0% { transform: translateY(-50%); }
+      100% { transform: translateY(0); }
+    }
+    .animate-scroll-up {
+      animation: scrollVerticalUp 35s linear infinite;
+      will-change: transform;
+    }
+    .animate-scroll-down {
+      animation: scrollVerticalDown 40s linear infinite;
+      will-change: transform;
+    }
+    
+    /* AI Laser Scanner */
+    @keyframes laserScan {
+      0%, 100% { top: 0; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      50% { top: 100%; }
+    }
+    .laser-line {
+      animation: laserScan 3s ease-in-out infinite;
+    }
+
+    /* UI Fade Animation */
+    @keyframes fadeInUpMenu {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up-menu {
+      animation: fadeInUpMenu 0.4s ease forwards;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #FDFBF7; }
+    ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #997A15; }
+  </style>
+</head>
+<body class="selection:bg-gold-mid selection:text-white bg-pearl bg-silk">
+
+  <!-- Custom Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Audio -->
+  <audio id="bg-audio" loop src="Indian 1.wav"></audio>
+
+  <!-- Mute Button -->
+  <button id="mute-btn" class="hidden interactive fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[90] p-3 md:p-4 rounded-full border border-gold-mid/50 bg-white/60 backdrop-blur-xl text-gold-dark hover:bg-gold-mid/10 transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.2)]">
+    <i data-lucide="volume-2" id="mute-icon" class="w-5 h-5"></i>
+  </button>
+
+  <!-- STATE 1: THE SECURE GATE -->
+  <div id="gate-screen" class="fixed inset-0 z-[200] bg-matte-black flex flex-col items-center justify-center transition-opacity duration-1000">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.05)_0%,transparent_60%)]"></div>
+    
+    <div class="z-10 flex flex-col items-center max-w-md w-full px-6 space-y-8 md:space-y-10">
+      <img src="https://i.pinimg.com/736x/d6/4e/32/d64e3279b97b5765ccfdd0d93eb02cf6.jpg" class="w-40 md:w-20 opacity-90 filter sepia saturate-200 hue-rotate-15" alt="Monogram" />
+      
+      <div class="text-center space-y-4">
+        <p class="font-serif italic text-gold-mid text-xs md:text-sm tracking-widest uppercase">Confidential Protocol</p>
+        <h2 class="font-engraved text-xl md:text-3xl text-white tracking-widest leading-relaxed">You have been personally invited to a private celebration</h2>
+      </div>
+
+      <div class="w-full space-y-6 pt-6 md:pt-8">
+        <div class="relative interactive">
+          <i data-lucide="key" class="absolute left-0 top-1/2 -translate-y-1/2 text-gold-mid w-5 h-5 opacity-50 border-r border-gold-mid/30 pr-3 pb-1"></i>
+          <input 
+            type="password" 
+            id="invitation-code"
+            placeholder="Enter Code (Type: VIP)" 
+            class="w-full bg-transparent border-b border-gold-mid/30 py-4 pl-12 text-center text-white font-mono tracking-[0.3em] md:tracking-[0.5em] uppercase focus:outline-none focus:border-gold-mid transition-colors placeholder:text-white/20 placeholder:tracking-widest text-sm md:text-base"
+          />
+        </div>
+        <p id="error-msg" class="text-red-400 text-xs text-center tracking-widest uppercase hidden">Invalid Clearance Code</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 2: CINEMATIC DOORS & HERO -->
+  <div id="door-system" class="fixed inset-0 z-[150] hidden door-wrapper">
+    <!-- Left Door -->
+    <div class="door-left absolute inset-y-0 left-0 w-1/2 bg-matte-black border-r border-gold-mid/40 flex items-center justify-end z-20">
+      <div class="w-8 md:w-16 h-full border-r border-gold-mid/20 bg-gradient-to-r from-transparent to-black/40"></div>
+      <div class="absolute right-2 md:right-4 w-2 md:w-4 h-16 md:h-24 border border-gold-mid/40 rounded-sm bg-gradient-to-b from-gold-dark via-gold-mid to-gold-dark shadow-[0_0_15px_rgba(197,160,89,0.3)]"></div>
+    </div>
+    <!-- Right Door -->
+    <div class="door-right absolute inset-y-0 right-0 w-1/2 bg-matte-black border-l border-gold-mid/40 flex items-center justify-start z-20">
+      <div class="w-8 md:w-16 h-full border-l border-gold-mid/20 bg-gradient-to-l from-transparent to-black/40"></div>
+      <div class="absolute left-2 md:left-4 w-2 md:w-4 h-16 md:h-24 border border-gold-mid/40 rounded-sm bg-gradient-to-b from-gold-dark via-gold-mid to-gold-dark shadow-[0_0_15px_rgba(197,160,89,0.3)]"></div>
+    </div>
+
+    <!-- Hero Video Behind Doors -->
+    <div id="hero-screen" class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-black">
+      <div class="absolute inset-0 bg-black/40 z-10"></div>
+      <img src="https://images.unsplash.com/photo-1583089892943-e02e5bbce8f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2500&q=80" alt="Palace Video Simulation" class="w-full h-full object-cover animate-ken-burns opacity-90" />
+      
+      <div class="z-20 text-center flex flex-col items-center px-4 w-full max-w-4xl space-y-8 md:space-y-12 transition-opacity duration-1000" id="hero-content">
+        <!-- Mobile optimized stacking for names -->
+        <h1 class="font-engraved flex flex-col md:flex-row items-center justify-center text-5xl md:text-7xl lg:text-[8rem] text-white drop-shadow-2xl leading-none tracking-widest gap-2 md:gap-0">
+          <span>AARAV</span>
+          <span class="font-script text-gold-mid text-6xl md:text-8xl lg:text-[7rem] lowercase md:mx-4 drop-shadow-none">&</span>
+          <span>MEHER</span>
+        </h1>
+        <div class="w-16 md:w-24 h-px bg-gold-mid"></div>
+        <p class="font-serif tracking-[0.2em] md:tracking-[0.3em] text-white/90 text-[10px] md:text-sm uppercase leading-loose max-w-xl px-4">
+          Together with their families, request the honour of your presence at a celebration of legacy and love.
+        </p>
+        <button id="enter-main-btn" class="interactive relative overflow-hidden group border border-gold-mid bg-black/40 backdrop-blur-md px-8 md:px-10 py-3 md:py-4 uppercase tracking-[0.2em] md:tracking-[0.3em] font-serif text-[10px] md:text-xs text-gold-mid transition-all duration-700 hover:bg-gold-mid hover:text-black mt-4 md:mt-8 shimmer-btn">
+          <span class="relative z-10 font-semibold tracking-widest">Enter The Celebration</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 3: MAIN EXPERIENCE (IVORY & GOLD) -->
+  <div id="main-experience" class="relative z-20 hidden">
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Header Section -->
+    <header class="py-16 md:py-24 flex flex-col items-center bg-ivory border-b border-gold-mid/20 bg-marble px-4 text-center">
+       <h2 class="font-engraved text-xl md:text-2xl text-matte-black tracking-[0.2em] md:tracking-[0.4em] uppercase">The Mehta & Singhania Union</h2>
+    </header>
+
+    <!-- Family Legacy Section -->
+    <section class="py-20 md:py-32 px-6 md:px-20 relative bg-pearl">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
+        <div class="relative reveal group interactive order-2 lg:order-1">
+          <div class="absolute inset-0 bg-gold-mid transform -translate-x-3 -translate-y-3 md:-translate-x-4 md:-translate-y-4 opacity-20 transition-transform duration-700 group-hover:-translate-x-1 group-hover:-translate-y-1 md:group-hover:-translate-x-2 md:group-hover:-translate-y-2"></div>
+          <img src="https://i.pinimg.com/736x/11/e9/39/11e939d2564c2daf31130cb9624b2314.jpg" alt="Heritage" class="relative z-10 w-full object-cover aspect-[4/5] filter sepia-[0.2] contrast-125 border border-gold-mid/30" />
+          <div class="absolute -bottom-6 -right-6 md:-bottom-8 md:-right-8 bg-ivory border border-gold-mid/30 p-6 md:p-8 z-20 shadow-xl hidden sm:block">
+            <p class="font-engraved text-lg md:text-xl text-matte-black">A&M</p>
+          </div>
+        </div>
+        
+        <div class="space-y-6 md:space-y-10 reveal reveal-delay-1 order-1 lg:order-2">
+          <p class="font-serif italic text-gold-dark tracking-[0.1em] md:tracking-[0.2em] uppercase text-xs md:text-sm">A Legacy Built on Vision and Values</p>
+          <h3 class="font-engraved text-4xl md:text-5xl lg:text-6xl text-matte-black leading-tight">The Heritage <br/>Continues.</h3>
+          <p class="text-matte-black/70 leading-relaxed md:leading-loose font-light text-sm md:text-base text-justify">
+            The Mehta Industrial Group proudly welcomes you to witness the union of two illustrious families. Deeply rooted in tradition, yet looking toward a boundless future, this celebration is a testament to generations of dedication, philanthropy, and unbreakable bonds.
+          </p>
+          <div class="flex items-center gap-4 md:gap-6 pt-4 md:pt-6">
+             <div class="w-12 md:w-20 h-[1px] bg-gold-mid"></div>
+             <div class="font-script text-3xl md:text-4xl text-matte-black">R.K. Mehta & Family</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIP Pass System (Events) -->
+    <section class="py-20 md:py-32 relative bg-maroon text-white overflow-hidden bg-silk px-4 md:px-6">
+      <div class="absolute inset-0 opacity-5" style="background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');"></div>
+      
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="text-center mb-16 md:mb-24 reveal">
+          <h2 class="font-engraved text-3xl md:text-5xl text-gold-light mb-4 md:mb-6">Your Exclusive Invitation</h2>
+          <div class="inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 border border-gold-mid/40 bg-black/20 backdrop-blur-md rounded-sm text-[10px] md:text-xs tracking-widest font-light text-ivory uppercase text-left md:text-center">
+            <i data-lucide="check-circle" class="text-gold-mid w-3 h-3 md:w-4 md:h-4 shrink-0"></i>
+            <span>Events below are curated specifically for your profile</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          <!-- VIP Event Card 1 -->
+          <div class="border border-gold-mid/30 p-6 md:p-10 reveal interactive group bg-gradient-to-b from-black/20 to-transparent hover:border-gold-mid transition-all duration-500">
+            <p class="text-gold-mid font-serif italic mb-2 md:mb-3 tracking-widest text-xs md:text-sm border-b border-gold-mid/20 pb-2 md:pb-3 inline-block">Day I • The Arrival</p>
+            <h3 class="font-engraved text-2xl md:text-3xl text-ivory mb-6 md:mb-8 mt-2 md:mt-4">Welcome Soirée</h3>
+            <div class="space-y-3 md:space-y-4 text-xs md:text-sm text-ivory/80 font-light mb-8 md:mb-10 tracking-wide">
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="clock" class="text-gold-mid w-4 h-4 shrink-0"></i> Sunset Hours (7:00 PM)</div>
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="map-pin" class="text-gold-mid w-4 h-4 shrink-0"></i> The Royal Courtyard</div>
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="user" class="text-gold-mid w-4 h-4 shrink-0"></i> Dress: Black Tie / Cocktail</div>
+            </div>
+            <div class="flex flex-col gap-2 md:gap-3">
+              <button onclick="showToast('Added to your Private Calendar')" class="interactive w-full py-3 border border-gold-mid/50 text-gold-mid text-[10px] md:text-xs tracking-widest uppercase hover:bg-gold-mid hover:text-black transition-colors">Add to Calendar</button>
+              <button onclick="showToast('Attaché Notified. Buggy Dispatched.')" class="interactive w-full py-3 bg-black/40 text-white/60 text-[10px] md:text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:text-white transition-colors"><i data-lucide="car-front" class="w-3 h-3 md:w-4 md:h-4"></i> Request Buggy</button>
+            </div>
+          </div>
+
+          <!-- VIP Event Card 2 -->
+          <div class="border border-gold-mid/60 p-6 md:p-10 reveal reveal-delay-1 interactive group bg-gold-mid/10 hover:bg-gold-mid/20 transition-all duration-500 transform lg:-translate-y-4 shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+            <p class="text-gold-light font-serif italic mb-2 md:mb-3 tracking-widest text-xs md:text-sm border-b border-gold-mid/40 pb-2 md:pb-3 inline-block">Day II • The Gala</p>
+            <h3 class="font-engraved text-2xl md:text-3xl text-ivory mb-6 md:mb-8 mt-2 md:mt-4">Royal Sangeet Night</h3>
+            <div class="space-y-3 md:space-y-4 text-xs md:text-sm text-ivory/80 font-light mb-8 md:mb-10 tracking-wide">
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="clock" class="text-gold-light w-4 h-4 shrink-0"></i> Evening Gala (8:30 PM)</div>
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="map-pin" class="text-gold-light w-4 h-4 shrink-0"></i> Zenana Mahal Palace</div>
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="user" class="text-gold-light w-4 h-4 shrink-0"></i> Dress: Regal Indian Glamour</div>
+            </div>
+            <div class="flex flex-col gap-2 md:gap-3">
+              <button onclick="showToast('Added to your Private Calendar')" class="interactive w-full py-3 bg-gold-mid text-black font-semibold text-[10px] md:text-xs tracking-widest uppercase hover:bg-gold-light transition-colors">Add to Calendar</button>
+              <button onclick="showToast('Attaché Notified. Buggy Dispatched.')" class="interactive w-full py-3 bg-black/40 text-white/60 text-[10px] md:text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:text-white transition-colors"><i data-lucide="car-front" class="w-3 h-3 md:w-4 md:h-4"></i> Request Buggy</button>
+            </div>
+          </div>
+
+          <!-- VIP Event Card 3 -->
+          <div class="border border-gold-mid/30 p-6 md:p-10 reveal reveal-delay-2 interactive group bg-gradient-to-b from-black/20 to-transparent hover:border-gold-mid transition-all duration-500">
+            <p class="text-gold-mid font-serif italic mb-2 md:mb-3 tracking-widest text-xs md:text-sm border-b border-gold-mid/20 pb-2 md:pb-3 inline-block">Day III • The Union</p>
+            <h3 class="font-engraved text-2xl md:text-3xl text-ivory mb-6 md:mb-8 mt-2 md:mt-4">Wedding Vows</h3>
+            <div class="space-y-3 md:space-y-4 text-xs md:text-sm text-ivory/80 font-light mb-8 md:mb-10 tracking-wide">
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="clock" class="text-gold-mid w-4 h-4 shrink-0"></i> Twilight Muhurat (5:00 PM)</div>
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="map-pin" class="text-gold-mid w-4 h-4 shrink-0"></i> Jagmandir Island</div>
+              <div class="flex items-center gap-3 md:gap-4"><i data-lucide="user" class="text-gold-mid w-4 h-4 shrink-0"></i> Dress: Pristine Ivory & Gold</div>
+            </div>
+            <div class="flex flex-col gap-2 md:gap-3">
+              <button onclick="showToast('Added to your Private Calendar')" class="interactive w-full py-3 border border-gold-mid/50 text-gold-mid text-[10px] md:text-xs tracking-widest uppercase hover:bg-gold-mid hover:text-black transition-colors">Add to Calendar</button>
+              <button onclick="showToast('Attaché Notified. Private Boat Prepared.')" class="interactive w-full py-3 bg-black/40 text-white/60 text-[10px] md:text-xs tracking-widest uppercase flex items-center justify-center gap-2 hover:text-white transition-colors"><i data-lucide="ship" class="w-3 h-3 md:w-4 md:h-4"></i> Private Boat Transfer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANCED AI: Royal Lens / AI Photo Concierge -->
+    <section class="py-20 md:py-32 bg-matte-black text-pearl relative border-y border-gold-mid/30 overflow-hidden px-4 md:px-6">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(197,160,89,0.1)_0%,transparent_50%)] pointer-events-none"></div>
+      
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="flex flex-col lg:flex-row gap-12 md:gap-20 items-center">
+          
+          <!-- Text & Upload Action -->
+          <div class="w-full lg:w-5/12 space-y-6 md:space-y-8 reveal">
+            <div class="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 border border-gold-mid/30 bg-gold-mid/10 rounded-full text-[9px] md:text-[10px] tracking-widest text-gold-light uppercase shadow-[0_0_15px_rgba(197,160,89,0.2)]">
+              <i data-lucide="scan-face" class="w-3 h-3 md:w-4 md:h-4"></i> Nyota AI Vision Active
+            </div>
+            
+            <h2 class="font-engraved text-4xl md:text-5xl lg:text-6xl text-ivory leading-tight">The Royal <br/><span class="gold-gradient-text italic font-serif">Lens</span></h2>
+            
+            <p class="text-xs md:text-sm font-light text-ivory/60 leading-relaxed text-justify">
+              Bypass the endless scrolling. Our proprietary AI facial recognition engine instantly curates your personal celebration gallery. Submit your profile to access every professional photograph you were captured in.
+            </p>
+            
+            <!-- Hidden File Inputs for Native Camera/Gallery -->
+            <input type="file" id="ai-camera-input" accept="image/*" capture="environment" class="hidden">
+            <input type="file" id="ai-gallery-input" accept="image/*" class="hidden">
+
+            <!-- Facial Recognition Upload Box (Interactive) -->
+            <div id="ai-upload-box" class="mt-6 md:mt-8 relative w-full border-2 border-dashed border-gold-mid/40 bg-white/5 hover:bg-gold-mid/10 transition-all duration-500 p-6 md:p-8 text-center rounded-sm shadow-xl overflow-hidden touch-manipulation">
+               <!-- Laser Scanner Line (Used during scan) -->
+               <div id="ai-laser" class="absolute left-0 w-full h-[2px] bg-gold-mid shadow-[0_0_15px_#C5A059] laser-line hidden"></div>
+               
+               <!-- Default View (Click to open menu) -->
+               <div id="ai-default-view" class="interactive cursor-pointer group">
+                 <div id="ai-icon-container" class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gold-mid/20 flex items-center justify-center mx-auto mb-4 md:mb-6 transition-transform border border-gold-mid/30 group-hover:scale-110">
+                   <i id="ai-upload-icon" data-lucide="camera" class="w-6 h-6 md:w-8 md:h-8 text-gold-light transition-colors"></i>
+                 </div>
+                 <h4 id="ai-upload-text" class="font-serif text-lg md:text-xl text-gold-light mb-2 md:mb-3">Find My Portraits</h4>
+                 <p id="ai-upload-subtext" class="text-[10px] md:text-xs text-ivory/50 uppercase tracking-[0.2em] transition-opacity">Tap to initiate AI Facial Recognition</p>
+               </div>
+
+               <!-- Options Menu View (Hidden initially) -->
+               <div id="ai-options-view" class="hidden flex-col gap-3 md:gap-4 animate-fade-in-up-menu">
+                   <h4 class="font-serif text-sm md:text-base text-gold-light mb-1 md:mb-2">Select Input Method</h4>
+                   <button id="btn-capture" class="interactive w-full py-3 md:py-4 border border-gold-mid/50 bg-black/40 text-gold-light text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold-mid hover:text-black transition-colors flex items-center justify-center gap-3">
+                       <i data-lucide="camera" class="w-4 h-4"></i> 1. Capture Selfie
+                   </button>
+                   <button id="btn-upload" class="interactive w-full py-3 md:py-4 border border-gold-mid/50 bg-black/40 text-gold-light text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold-mid hover:text-black transition-colors flex items-center justify-center gap-3">
+                       <i data-lucide="image" class="w-4 h-4"></i> 2. Upload from Gallery
+                   </button>
+                   <button id="btn-find" class="interactive w-full py-3 md:py-4 bg-gold-mid text-black font-semibold text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold-light transition-colors flex items-center justify-center gap-3 shadow-[0_0_15px_rgba(197,160,89,0.3)]">
+                       <i data-lucide="scan-face" class="w-4 h-4"></i> 3. Live AI Face Scan
+                   </button>
+               </div>
+            </div>
+            
+            <!-- Live Sync Stats -->
+            <div class="flex items-center gap-6 md:gap-8 pt-6 md:pt-8 border-t border-white/10">
+               <div class="text-left">
+                 <p class="font-engraved text-2xl md:text-3xl text-gold-mid drop-shadow-[0_0_10px_rgba(197,160,89,0.5)]">4,208</p>
+                 <p class="text-[8px] md:text-[9px] uppercase tracking-[0.3em] text-ivory/40 mt-1">Photos Synced</p>
+               </div>
+               <div class="w-px h-8 md:h-10 bg-white/10"></div>
+               <div class="text-left flex items-center gap-2 md:gap-3">
+                 <div class="w-2 h-2 rounded-full bg-emerald shadow-[0_0_10px_#0A3B2C] animate-pulse"></div>
+                 <div>
+                   <p class="font-engraved text-lg md:text-xl text-ivory">Live</p>
+                   <p class="text-[8px] md:text-[9px] uppercase tracking-[0.3em] text-ivory/40 mt-1">Server Status</p>
+                 </div>
+               </div>
+            </div>
+          </div>
+
+          <!-- True Auto-Scrolling Masonry Feed -->
+          <div class="w-full lg:w-7/12 reveal reveal-delay-1 relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-md border border-gold-mid/20 bg-[#050505] shadow-2xl">
+             
+             <!-- Gradient Overlays for seamless loop illusion -->
+             <div class="absolute top-0 left-0 w-full h-16 md:h-24 bg-gradient-to-b from-[#050505] to-transparent z-10 pointer-events-none"></div>
+             <div class="absolute bottom-0 left-0 w-full h-24 md:h-32 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent z-10 pointer-events-none flex items-end justify-center pb-4 md:pb-6">
+                <button onclick="openModal('Master Gallery Locked', 'lock', 'To preserve the exclusivity of the event, the uncensored master gallery will be unlocked 24 hours after the final ceremony concludes.', 'Understood')" class="interactive px-6 md:px-8 py-3 bg-black/60 backdrop-blur-md border border-gold-mid/50 text-gold-mid text-[10px] md:text-xs tracking-widest uppercase hover:bg-gold-mid hover:text-black transition-colors z-20 shadow-lg">
+                  Open Master Gallery
+                </button>
+             </div>
+
+             <!-- Auto-scrolling Grid Columns -->
+             <div id="ai-masonry-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 px-2 md:px-4 opacity-80 h-full transform scale-110">
+               <!-- Column 1 (Scrolls Up) -->
+               <div class="flex flex-col gap-2 md:gap-3 animate-scroll-up pt-4">
+                 <!-- Set 1 -->
+                 <img src="https://i.pinimg.com/736x/7b/40/4c/7b404c8d76c65a9103a995c42b05a430.jpg" class="gallery-img w-full object-cover rounded-sm h-40 md:h-48 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/c4/38/bb/c438bb2f2de9feb70c9bd9b404c134b1.jpg" class="gallery-img w-full object-cover rounded-sm h-56 md:h-64 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/1200x/29/46/6d/29466d386960b571135a1b225158dadb.jpg" class="gallery-img w-full object-cover rounded-sm h-40 md:h-48 border border-gold-mid/20 transition-opacity duration-700">
+                 <!-- Duplicated for infinite scroll -->
+                 <img src="https://i.pinimg.com/736x/aa/3c/1a/aa3c1ad99b2dfa28b0d06a052d53abe2.jpg" class="gallery-img w-full object-cover rounded-sm h-40 md:h-48 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/57/e6/9a/57e69a20aa6fc2932ed04ea0b87ce5da.jpg" class="gallery-img w-full object-cover rounded-sm h-56 md:h-64 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/c6/c9/f7/c6c9f73e4cbb6648638a9b91e8997eac.jpg" class="gallery-img w-full object-cover rounded-sm h-40 md:h-48 border border-gold-mid/20 transition-opacity duration-700">
+               </div>
+               
+               <!-- Column 2 (Scrolls Down) -->
+               <div class="flex flex-col gap-2 md:gap-3 animate-scroll-down -mt-[100%] pb-4">
+                 <!-- Set 1 -->
+                 <img src="https://i.pinimg.com/736x/26/8c/82/268c82ee4b857fdee4525f5c0afeb094.jpg" class="gallery-img w-full object-cover rounded-sm h-56 md:h-64 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/f5/c3/41/f5c341fe2eae2e37cbea625fd8743ac2.jpg" class="gallery-img w-full object-cover rounded-sm h-40 md:h-48 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/b8/ea/17/b8ea178d795f48bfd930c68deb3ed396.jpg" class="gallery-img w-full object-cover rounded-sm h-48 md:h-56 border border-gold-mid/20 transition-opacity duration-700">
+                 <!-- Duplicated for infinite scroll -->
+                 <img src="https://i.pinimg.com/736x/7b/40/4c/7b404c8d76c65a9103a995c42b05a430.jpg" class="gallery-img w-full object-cover rounded-sm h-56 md:h-64 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/57/e6/9a/57e69a20aa6fc2932ed04ea0b87ce5da.jpg" class="gallery-img w-full object-cover rounded-sm h-40 md:h-48 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/c6/c9/f7/c6c9f73e4cbb6648638a9b91e8997eac.jpg" class="gallery-img w-full object-cover rounded-sm h-48 md:h-56 border border-gold-mid/20 transition-opacity duration-700">
+               </div>
+               
+               <!-- Column 3 (Hidden on mobile, Scrolls Up but slower offset) -->
+               <div class="hidden md:flex flex-col gap-3 animate-scroll-up pt-12" style="animation-duration: 45s;">
+                 <!-- Set 1 -->
+                 <img src="https://i.pinimg.com/736x/aa/3c/1a/aa3c1ad99b2dfa28b0d06a052d53abe2.jpg" class="gallery-img w-full object-cover rounded-sm h-56 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/91/50/89/9150891e2e9ec6729a29662558d5a358.jpg" class="gallery-img w-full object-cover rounded-sm h-56 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/29/d5/b6/29d5b6fc95c65a588cf6db6c19296b65.jpg" class="gallery-img w-full object-cover rounded-sm h-48 border border-gold-mid/20 transition-opacity duration-700">
+                 <!-- Duplicated for infinite scroll -->
+                 <img src="https://i.pinimg.com/736x/39/ab/aa/39abaae994f34e2ddc55e4db6090636a.jpg" class="gallery-img w-full object-cover rounded-sm h-56 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/39/ab/aa/39abaae994f34e2ddc55e4db6090636a.jpg" class="gallery-img w-full object-cover rounded-sm h-56 border border-gold-mid/20 transition-opacity duration-700">
+                 <img src="https://i.pinimg.com/736x/c6/c9/f7/c6c9f73e4cbb6648638a9b91e8997eac.jpg" class="gallery-img w-full object-cover rounded-sm h-48 border border-gold-mid/20 transition-opacity duration-700">
+               </div>
+             </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Logistics, Travel & Concierge Dashboard -->
+    <section class="py-20 md:py-32 bg-ivory bg-marble relative px-4 md:px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12 md:mb-16 reveal">
+          <h2 class="font-engraved text-3xl md:text-4xl text-matte-black mb-3 md:mb-4">Wedding Hospitality Dashboard</h2>
+          <p class="text-matte-black/60 font-serif italic tracking-widest text-xs md:text-base">Your hospitality and stay have been prepared accordingly.</p>
+        </div>
+
+        <div class="glass-card-light p-6 md:p-12 reveal shadow-2xl">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16">
+            
+            <!-- Travel & Stay Status -->
+            <div class="space-y-8 md:space-y-10">
+              <div class="border-b border-gold-mid/30 pb-3 md:pb-4 flex justify-between items-end">
+                 <h4 class="font-engraved text-lg md:text-xl text-matte-black">Assigned Allocation</h4>
+                 <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-emerald font-bold bg-emerald/10 px-2 py-1">Confirmed</span>
+              </div>
+              
+              <div class="space-y-6">
+                <div class="flex items-start gap-3 md:gap-4">
+                  <div class="p-2 md:p-3 bg-gold-mid/10 rounded-sm text-gold-dark"><i data-lucide="bed-double" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                  <div>
+                    <p class="text-[10px] md:text-xs tracking-widest uppercase text-matte-black/50 mb-1">Suite Details</p>
+                    <p class="font-serif text-base md:text-lg text-matte-black">The Lakeview Royal Suite</p>
+                    <p class="text-xs md:text-sm font-light text-matte-black/70">Check-in: 14th Nov • Check-out: 17th Nov</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3 md:gap-4">
+                  <div class="p-2 md:p-3 bg-gold-mid/10 rounded-sm text-gold-dark"><i data-lucide="plane-landing" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                  <div>
+                    <p class="text-[10px] md:text-xs tracking-widest uppercase text-matte-black/50 mb-1">Arrival Logistics</p>
+                    <p class="font-serif text-base md:text-lg text-matte-black">Flight BA-2041 (Arriving 11:30 AM)</p>
+                    <a href="#" onclick="openModal('Terminal Map', 'map', 'Your private chauffeur will meet you at Gate 4. The digital terminal map has been dispatched to your registered email address.', 'Close Map'); return false;" class="text-xs md:text-sm font-light text-gold-dark underline interactive hover:text-matte-black">View Airport Map</a>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3 md:gap-4">
+                  <div class="p-2 md:p-3 bg-gold-mid/10 rounded-sm text-gold-dark"><i data-lucide="car" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                  <div>
+                    <p class="text-[10px] md:text-xs tracking-widest uppercase text-matte-black/50 mb-1">Private Chauffeur</p>
+                    <p class="font-serif text-base md:text-lg text-matte-black">Mr. Vikram Singh</p>
+                    <p class="text-xs md:text-sm font-light text-matte-black/70">Vehicle: Range Rover Vogue (RJ-27-VIP-1)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 md:pt-6">
+                 <button onclick="window.open('https://wa.me/919876543210?text=Hello%20Attaché,%20I%20need%20assistance.', '_blank')" class="interactive w-full py-3 md:py-4 bg-emerald text-white font-semibold tracking-[0.1em] md:tracking-[0.2em] uppercase text-[10px] md:text-xs flex items-center justify-center gap-2 md:gap-3 hover:bg-emerald/90 transition-all shadow-lg">
+                   <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp Concierge Chat
+                 </button>
+              </div>
+            </div>
+
+            <!-- Smart RSVP & Preferences -->
+            <div class="space-y-6 md:space-y-8 bg-white/50 p-6 md:p-8 border border-gold-mid/20">
+              <h4 class="font-engraved text-lg md:text-xl text-matte-black border-b border-gold-mid/30 pb-3 md:pb-4">Protocol & Preferences</h4>
+              
+              <div class="space-y-4 md:space-y-5">
+                <div>
+                  <label class="block text-[10px] md:text-xs uppercase tracking-widest text-matte-black/60 mb-1 md:mb-2">Attending Guests</label>
+                  <select class="interactive w-full bg-transparent border-b border-gold-mid/30 py-2 text-matte-black font-serif text-base md:text-lg focus:outline-none focus:border-gold-dark">
+                    <option>2 Adults, 0 Children</option>
+                    <option>2 Adults, 1 Child</option>
+                    <option>1 Adult</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] md:text-xs uppercase tracking-widest text-matte-black/60 mb-1 md:mb-2">Culinary Preference</label>
+                  <select class="interactive w-full bg-transparent border-b border-gold-mid/30 py-2 text-matte-black font-serif text-base md:text-lg focus:outline-none focus:border-gold-dark">
+                    <option>Standard Gourmet</option>
+                    <option>Strict Jain</option>
+                    <option>Vegan / Plant-based</option>
+                    <option>Gluten-Free / Allergies (Add Note)</option>
+                  </select>
+                </div>
+
+                <!-- Concierge Requests Grid -->
+                <div class="pt-2 md:pt-4">
+                  <label class="block text-[10px] md:text-xs uppercase tracking-widest text-matte-black/60 mb-3 md:mb-4">Concierge Requests (Select all that apply)</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
+                    <button onclick="toggleConcierge(this)" class="interactive p-3 border border-gold-mid/30 text-[10px] md:text-xs tracking-wider uppercase text-matte-black/70 hover:bg-gold-mid/10 transition-all flex items-center gap-2 text-left"><i data-lucide="scissors" class="w-4 h-4 text-gold-dark shrink-0"></i> Makeup Artist</button>
+                    <button onclick="toggleConcierge(this)" class="interactive p-3 border border-gold-mid/30 text-[10px] md:text-xs tracking-wider uppercase text-matte-black/70 hover:bg-gold-mid/10 transition-all flex items-center gap-2 text-left"><i data-lucide="flower-2" class="w-4 h-4 text-gold-dark shrink-0"></i> Spa Booking</button>
+                    <button onclick="toggleConcierge(this)" class="interactive p-3 border border-gold-mid/30 text-[10px] md:text-xs tracking-wider uppercase text-matte-black/70 hover:bg-gold-mid/10 transition-all flex items-center gap-2 text-left"><i data-lucide="wheelchair" class="w-4 h-4 text-gold-dark shrink-0"></i> Wheelchair</button>
+                    <button onclick="toggleConcierge(this)" class="interactive p-3 border border-gold-mid/30 text-[10px] md:text-xs tracking-wider uppercase text-matte-black/70 hover:bg-gold-mid/10 transition-all flex items-center gap-2 text-left"><i data-lucide="bell-ring" class="w-4 h-4 text-gold-dark shrink-0"></i> Room Assistance</button>
+                  </div>
+                </div>
+
+                <button onclick="showToast('Protocol Preferences Secured & Updated')" class="interactive w-full py-3 md:py-4 mt-4 md:mt-6 bg-matte-black text-ivory font-semibold tracking-[0.2em] uppercase text-[10px] md:text-xs hover:bg-gold-dark transition-all">
+                  Update Protocol
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Digital Guestbook & Blessings -->
+    <section class="py-20 md:py-32 bg-pearl relative px-4 md:px-6">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
+        
+        <!-- Live Global Stream / Guestbook -->
+        <div class="reveal group">
+          <div class="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+            <div class="w-8 md:w-12 h-px bg-gold-mid"></div>
+            <h3 class="font-engraved text-2xl md:text-3xl text-matte-black">Digital Guestbook</h3>
+          </div>
+          <p class="text-xs md:text-sm font-light text-matte-black/70 mb-8 md:mb-10 leading-relaxed">For our family across the globe. Leave a note on the memory wall or join us virtually as the magic unfolds in real-time.</p>
+          
+          <div class="space-y-3 md:space-y-4">
+            <button onclick="openModal('Live Global Stream', 'radio', 'The encrypted live stream will commence on Day 3 at 4:30 PM IST. Please return here with your clearance code to watch the ceremony.', 'Acknowledge')" class="interactive w-full flex justify-between items-center py-4 md:py-5 px-4 md:px-6 border border-gold-mid/20 bg-white shadow-sm hover:shadow-md hover:border-gold-mid transition-all group-btn">
+              <span class="font-serif text-base md:text-lg text-matte-black flex items-center gap-3 md:gap-4"><i data-lucide="radio" class="text-red-600 animate-pulse w-5 h-5 shrink-0"></i> Live Ceremony Streaming</span>
+              <i data-lucide="arrow-right" class="text-gold-mid transition-transform group-hover:translate-x-2 w-4 h-4 md:w-5 md:h-5"></i>
+            </button>
+            <button onclick="openModal('Royal Guestbook', 'pen-tool', 'Leave a heartfelt message for Aarav and Meher.<br><br><textarea class=\'w-full bg-transparent border-b border-gold-mid/50 p-2 mt-4 text-matte-black font-serif focus:outline-none placeholder:text-matte-black/40\' rows=\'3\' placeholder=\'Enter your blessings here...\'></textarea>', 'Seal Message')" class="interactive w-full flex justify-between items-center py-4 md:py-5 px-4 md:px-6 border border-gold-mid/20 bg-white shadow-sm hover:shadow-md hover:border-gold-mid transition-all group-btn">
+              <span class="font-serif text-base md:text-lg text-matte-black flex items-center gap-3 md:gap-4"><i data-lucide="pen-tool" class="text-gold-dark w-5 h-5 shrink-0"></i> Sign the Royal Guestbook</span>
+              <i data-lucide="arrow-right" class="text-gold-mid transition-transform group-hover:translate-x-2 w-4 h-4 md:w-5 md:h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Digital Shagun / Blessings -->
+        <div class="reveal reveal-delay-1 bg-maroon text-ivory p-8 md:p-12 relative overflow-hidden flex flex-col justify-center items-center text-center shadow-2xl bg-silk border border-gold-mid/30 rounded-sm">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.1)_0%,transparent_70%)]"></div>
+          
+          <i data-lucide="gift" class="w-10 h-10 md:w-12 md:h-12 text-gold-mid mb-4 md:mb-6 relative z-10"></i>
+          <h3 class="font-engraved text-3xl md:text-4xl mb-4 md:mb-6 relative z-10">Bless the Couple</h3>
+          <p class="text-xs md:text-sm font-light text-ivory/80 leading-relaxed md:leading-loose mb-8 md:mb-10 relative z-10 max-w-sm">
+            Your presence is our ultimate privilege. However, should you wish to convey your love and blessings, we have curated meaningful avenues.
+          </p>
+          
+          <div class="w-full space-y-3 md:space-y-4 relative z-10">
+            <button onclick="openModal('Digital Shagun', 'gift', 'A secure encrypted gateway for your gracious digital Shagun. All blessings are deposited directly into the newlywed trust.<br><br><span class=\'block text-3xl font-serif text-gold-dark mt-4\'>₹ 11,000</span>', 'Proceed to Secure Payment')" class="interactive w-full py-3 md:py-4 border border-gold-mid/50 bg-black/20 backdrop-blur-sm text-gold-light text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold-mid hover:text-matte-black transition-colors">Digital Shagun Envelope</button>
+            <button onclick="openModal('Charity Foundation', 'heart', 'In lieu of physical gifts, Aarav and Meher are matching all donations made to the Mehta Foundation for Rural Education.', 'Donate Privately')" class="interactive w-full py-3 md:py-4 border border-gold-mid/50 bg-black/20 backdrop-blur-sm text-gold-light text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold-mid hover:text-matte-black transition-colors">Charity Foundation Donation</button>
+            <button onclick="openModal('Honeymoon Fund', 'plane', 'Contribute to the couple\'s bespoke travel experiences across the Amalfi Coast.', 'Contribute to Fund')" class="interactive w-full py-3 md:py-4 border border-gold-mid/50 bg-black/20 backdrop-blur-sm text-gold-light text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold-mid hover:text-matte-black transition-colors">Honeymoon Contribution</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Finale / Footer -->
+    <footer class="relative py-24 md:py-40 bg-matte-black flex flex-col items-center justify-center overflow-hidden text-pearl px-4">
+       <!-- Fireworks / Glow Background Simulation -->
+       <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(197,160,89,0.15)_0%,transparent_60%)] pointer-events-none"></div>
+       <div class="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-gold-mid/50 to-transparent"></div>
+       
+       <h2 class="font-engraved text-3xl md:text-4xl lg:text-5xl gold-gradient-text mb-8 md:mb-12 z-10 text-center reveal">We await the honour of <br/>celebrating with you.</h2>
+       
+       <!-- Elegant Countdown -->
+       <div class="flex gap-4 md:gap-16 text-center z-10 mb-16 md:mb-24 border-y border-gold-mid/20 py-8 px-4 md:py-10 md:px-16 reveal reveal-delay-1 w-full max-w-3xl justify-center">
+         <div>
+           <div class="text-4xl md:text-7xl font-serif text-white mb-2 md:mb-4">42</div>
+           <div class="text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.4em] text-gold-mid">Days</div>
+         </div>
+         <div class="w-px h-12 md:h-16 bg-gold-mid/30 self-center"></div>
+         <div>
+           <div class="text-4xl md:text-7xl font-serif text-white mb-2 md:mb-4">14</div>
+           <div class="text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.4em] text-gold-mid">Hours</div>
+         </div>
+         <div class="w-px h-12 md:h-16 bg-gold-mid/30 self-center"></div>
+         <div>
+           <div class="text-4xl md:text-7xl font-serif text-white mb-2 md:mb-4">30</div>
+           <div class="text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.4em] text-gold-mid">Mins</div>
+         </div>
+       </div>
+
+       <div class="z-10 text-center reveal reveal-delay-2 flex flex-col items-center">
+         <img src="https://i.pinimg.com/736x/24/07/c7/2407c7ad368764a7f37d49237e751c32.jpg" class="w-10px md:w-10px opacity-50 filter sepia saturate-200 hue-rotate-15 mb-4 md:mb-6" alt="Monogram" />
+         <p class="text-[8px] md:text-[10px] uppercase tracking-[0.4em] md:tracking-[0.6em] text-white/40 mb-10 md:mb-16">Udaipur • Rajasthan</p>
+         
+         <div class="flex items-center justify-center gap-2 md:gap-3 opacity-50 hover:opacity-100 transition-opacity cursor-none interactive">
+            <i data-lucide="diamond" class="text-gold-mid w-3 h-3 md:w-4 md:h-4"></i>
+            <p class="text-[8px] md:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-light text-white">Crafted as a Nyota Private Experience</p>
+         </div>
+       </div>
+    </footer>
+  </div>
+
+  <!-- UNIVERSAL BESPOKE MODAL SYSTEM -->
+  <div id="universal-modal" class="fixed inset-0 z-[999] hidden items-center justify-center">
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-md interactive cursor-pointer" onclick="closeModal()"></div>
+      <div id="modal-content" class="relative z-10 bg-ivory bg-marble border border-gold-mid/50 p-8 md:p-12 max-w-lg w-full mx-4 shadow-[0_30px_60px_rgba(0,0,0,0.5)] transform scale-95 opacity-0 transition-all duration-300">
+          <button onclick="closeModal()" class="interactive absolute top-4 right-4 text-matte-black/50 hover:text-matte-black transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+          <div id="modal-body" class="text-center space-y-4">
+              <!-- Content injected via JS -->
+          </div>
+      </div>
+  </div>
+
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    /* =========================================
+       GLOBAL UI SYSTEMS (MODALS & TOASTS)
+    ========================================= */
+    function openModal(title, icon, text, buttonText) {
+        const modal = document.getElementById('universal-modal');
+        const modalBody = document.getElementById('modal-body');
+        const content = document.getElementById('modal-content');
+
+        modalBody.innerHTML = `
+            <div class="flex justify-center mb-6 text-gold-dark"><i data-lucide="${icon}" class="w-12 h-12 md:w-16 md:h-16"></i></div>
+            <h3 class="font-engraved text-3xl md:text-4xl text-matte-black">${title}</h3>
+            <div class="w-12 h-px bg-gold-mid mx-auto my-4"></div>
+            <p class="text-sm md:text-base font-light text-matte-black/80 leading-relaxed">${text}</p>
+            <button onclick="closeModal()" class="interactive mt-8 w-full py-4 bg-matte-black text-gold-mid font-semibold tracking-[0.2em] uppercase text-[10px] md:text-xs hover:bg-gold-dark hover:text-white transition-all shadow-lg">${buttonText}</button>
+        `;
+        lucide.createIcons();
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('universal-modal');
+        const content = document.getElementById('modal-content');
+        
+        // Ensure any modified buttons (like guestbook submit) revert cleanly
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-matte-black/95 backdrop-blur-md border border-gold-mid/50 text-gold-light px-6 py-3 md:px-8 md:py-4 rounded-sm text-[10px] md:text-xs tracking-widest uppercase shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-[999] transition-all duration-500 opacity-0 translate-y-4 text-center whitespace-nowrap';
+        toast.innerHTML = `<i data-lucide="check-circle" class="inline-block w-4 h-4 mr-2 mb-1 text-gold-mid"></i> ${message}`;
+        document.body.appendChild(toast);
+        lucide.createIcons();
+
+        setTimeout(() => {
+            toast.classList.remove('opacity-0', 'translate-y-4');
+        }, 10);
+
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-4');
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+    }
+
+    function toggleConcierge(btn) {
+        const isSelected = btn.classList.contains('bg-gold-mid/20');
+        
+        if (isSelected) {
+            btn.classList.remove('bg-gold-mid/20', 'border-gold-mid');
+            btn.classList.add('border-gold-mid/30');
+            showToast('Service Removed from Protocol');
+        } else {
+            btn.classList.remove('border-gold-mid/30');
+            btn.classList.add('bg-gold-mid/20', 'border-gold-mid');
+            showToast('Service Added to Protocol');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      /* =========================================
+         CUSTOM LUXURY CURSOR
+      ========================================= */
+      const cursorDot = document.getElementById('cursor-dot');
+      const cursorRing = document.getElementById('cursor-ring');
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let ringX = mouseX;
+      let ringY = mouseY;
+
+      if (window.getComputedStyle(cursorDot).display !== 'none') {
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          cursorDot.style.left = mouseX + 'px';
+          cursorDot.style.top = mouseY + 'px';
+        });
+
+        const renderCursor = () => {
+          ringX += (mouseX - ringX) * 0.15;
+          ringY += (mouseY - ringY) * 0.15;
+          cursorRing.style.left = ringX + 'px';
+          cursorRing.style.top = ringY + 'px';
+          requestAnimationFrame(renderCursor);
+        };
+        renderCursor();
+      }
+
+      const applyHoverEffect = () => {
+        const interactives = document.querySelectorAll('.interactive, a, button, input, select');
+        interactives.forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+          el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+      };
+      applyHoverEffect();
+
+      /* =========================================
+         GOLD PARTICLE SYSTEM
+      ========================================= */
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const particleCount = window.innerWidth > 768 ? 50 : 20;
+
+      const resizeCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 1.5 + 0.5;
+          this.speedY = Math.random() * 0.5 + 0.1;
+          this.speedX = (Math.random() - 0.5) * 0.3;
+          this.opacity = Math.random() * 0.4 + 0.1; 
+        }
+        update() {
+          this.y -= this.speedY;
+          this.x += this.speedX;
+          if (this.y < 0) {
+            this.y = canvas.height;
+            this.x = Math.random() * canvas.width;
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(197, 160, 89, ${this.opacity})`;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+
+      const animateParticles = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animateParticles);
+      };
+      animateParticles();
+
+      /* =========================================
+         SCROLL REVEAL ANIMATIONS
+      ========================================= */
+      const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      /* =========================================
+         AUDIO CONTROL
+      ========================================= */
+      const audio = document.getElementById('bg-audio');
+      const muteBtn = document.getElementById('mute-btn');
+      const muteIcon = document.getElementById('mute-icon');
+      let isMuted = false;
+
+      muteBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        audio.muted = isMuted;
+        muteIcon.setAttribute('data-lucide', isMuted ? 'volume-x' : 'volume-2');
+        lucide.createIcons();
+      });
+
+      /* =========================================
+         JOURNEY LOGIC: Gate -> Doors -> Main
+      ========================================= */
+      const gateScreen = document.getElementById('gate-screen');
+      const doorSystem = document.getElementById('door-system');
+      const heroScreen = document.getElementById('hero-screen');
+      const heroContent = document.getElementById('hero-content');
+      const mainExperience = document.getElementById('main-experience');
+      const enterMainBtn = document.getElementById('enter-main-btn');
+      const invCodeInput = document.getElementById('invitation-code');
+      const errorMsg = document.getElementById('error-msg');
+
+      invCodeInput.addEventListener('keyup', (e) => {
+        if(e.target.value.toUpperCase() === 'VIP' || e.target.value.toUpperCase() === 'NYOTA') {
+          errorMsg.classList.add('hidden');
+          document.body.style.cursor = 'wait';
+          invCodeInput.blur(); 
+          
+          setTimeout(() => {
+            document.body.style.cursor = 'auto';
+            gateScreen.style.opacity = '0';
+            gateScreen.style.pointerEvents = 'none';
+            
+            doorSystem.classList.remove('hidden');
+            
+            setTimeout(() => {
+              doorSystem.classList.add('doors-open');
+              audio.volume = 0.4;
+              audio.play().catch(e => console.log("Audio blocked by browser policy.", e));
+            }, 500);
+
+          }, 800);
+        } else if (e.target.value.length >= 3) {
+          errorMsg.classList.remove('hidden');
+        } else {
+          errorMsg.classList.add('hidden');
+        }
+      });
+
+      enterMainBtn.addEventListener('click', () => {
+        heroContent.style.opacity = '0'; 
+        
+        setTimeout(() => {
+          doorSystem.style.display = 'none'; 
+          mainExperience.classList.remove('hidden');
+          muteBtn.classList.remove('hidden'); 
+          
+          applyHoverEffect();
+          setTimeout(() => {
+             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+          }, 100);
+          
+          window.scrollTo(0, 0);
+        }, 1000);
+      });
+
+      /* =========================================
+         NEW: AI PHOTO CONCIERGE LOGIC (3 OPTIONS)
+      ========================================= */
+      const aiUploadBox = document.getElementById('ai-upload-box');
+      const aiDefaultView = document.getElementById('ai-default-view');
+      const aiOptionsView = document.getElementById('ai-options-view');
+      
+      const aiCameraInput = document.getElementById('ai-camera-input');
+      const aiGalleryInput = document.getElementById('ai-gallery-input');
+      
+      const btnCapture = document.getElementById('btn-capture');
+      const btnUpload = document.getElementById('btn-upload');
+      const btnFind = document.getElementById('btn-find');
+
+      const aiUploadText = document.getElementById('ai-upload-text');
+      const aiUploadSubtext = document.getElementById('ai-upload-subtext');
+      const aiIconContainer = document.getElementById('ai-icon-container');
+      const aiLaser = document.getElementById('ai-laser');
+
+      // 1. Click default box to open options
+      aiDefaultView.addEventListener('click', () => {
+        aiDefaultView.classList.add('hidden');
+        aiOptionsView.classList.remove('hidden');
+        aiOptionsView.classList.add('flex');
+        
+        // Disable box hover effect so it stays clean while menu is open
+        aiUploadBox.classList.remove('hover:bg-gold-mid/10');
+      });
+
+      // 2. Button Handlers
+      btnCapture.addEventListener('click', (e) => {
+        e.stopPropagation();
+        aiCameraInput.click();
+      });
+
+      btnUpload.addEventListener('click', (e) => {
+        e.stopPropagation();
+        aiGalleryInput.click();
+      });
+
+      btnFind.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Immediately trigger the AI Scanning simulation
+        startAIScanSimulation();
+      });
+
+      // 3. Handle physical file selection
+      aiCameraInput.addEventListener('change', handleFileSelect);
+      aiGalleryInput.addEventListener('change', handleFileSelect);
+
+      function handleFileSelect(e) {
+        if(e.target.files && e.target.files[0]) {
+          startAIScanSimulation();
+        }
+      }
+
+      // 4. The Scanning Simulation
+      function startAIScanSimulation() {
+          // Revert view to scanning state
+          aiOptionsView.classList.add('hidden');
+          aiOptionsView.classList.remove('flex');
+          aiDefaultView.classList.remove('hidden');
+          
+          aiUploadBox.classList.add('pointer-events-none');
+          aiUploadBox.classList.remove('interactive', 'cursor-pointer');
+          aiLaser.classList.remove('hidden');
+          
+          aiIconContainer.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 md:w-8 md:h-8 text-gold-light animate-spin"></i>';
+          aiIconContainer.classList.remove('group-hover:scale-110');
+          lucide.createIcons();
+          
+          aiUploadText.innerText = "Analyzing Facial Mapping...";
+          aiUploadSubtext.innerText = "Scanning 4,208 photos securely...";
+
+          setTimeout(() => {
+            aiLaser.style.display = 'none';
+            aiIconContainer.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6 md:w-8 md:h-8 text-emerald"></i>';
+            aiIconContainer.classList.remove('bg-gold-mid/20', 'border-gold-mid/30');
+            aiIconContainer.classList.add('bg-emerald/20', 'border-emerald/40');
+            lucide.createIcons();
+            
+            aiUploadText.innerText = "Identity Confirmed";
+            aiUploadText.classList.remove('text-gold-light');
+            aiUploadText.classList.add('text-emerald');
+            
+            aiUploadSubtext.innerText = "12 Private Portraits Recovered";
+            aiUploadBox.classList.remove('border-gold-mid/40');
+            aiUploadBox.classList.add('border-emerald', 'bg-emerald/5');
+
+            const personalizedImages = [
+              "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1543269664-7e94e33910c2?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1521252659862-eec69941b071?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=400&q=80",
+              "https://images.unsplash.com/photo-1530085128038-085025dccbc6?auto=format&fit=crop&w=400&q=80",
+            ];
+
+            const galleryImages = document.querySelectorAll('.gallery-img');
+            galleryImages.forEach((img, index) => {
+               img.style.opacity = 0;
+               setTimeout(() => {
+                  img.src = personalizedImages[index % personalizedImages.length];
+                  img.style.opacity = 1;
+               }, 500); 
+            });
+
+          }, 3000); 
+      }
+
+    });
+  </script>
+</body>
+</html>
